@@ -1,3 +1,4 @@
+# use julia 1.7.1
 include("../src/SOT.jl")
 using .SOT, PyPlot, Printf, Dates, LinearAlgebra, Statistics, SparseArrays, DataFrames, CSV
 using HDF5, Interpolations, Random, Distributions,NCDatasets
@@ -43,16 +44,16 @@ tinvfreq = [2.5, 3.5]
 # minimum CCs for T-wave pairs (at inversion frequencies)
 tmincc = [0.6, 0.3]
 
-# download P-wave data
+# download P-wave data to data/seisdata
 SOT.downloadseisdata(eqname, tsname, pstations; src=psrc)
 
-# cut and filter P waveforms
+# cut and filter P waveforms to data/pwaves
 SOT.cutpwaves(eqname, tsname, pstations, pintervals, pfreqbands)
 
-# find P-wave pairs
+# find P-wave pairs to data/catalogs
 SOT.findpairs(eqname, tsname, pstations, pintervals, pfreqbands)
  
-# measure T-wave lags Δτ
+# measure T-wave lags Δτ to data/tdelays, hydrohphone data from data/hydrdata
 SOT.twavepickold(eqname, tsname, tstations, tintervals, tavgwidth, treffreq, pstations, pintervals, pfreqbands;soundspeed=1.47e3)
 
 # collect usable pairs
@@ -60,6 +61,9 @@ tpairs, ppairs = SOT.collectpairs(eqname, tsname, tstations, tintervals, tavgwid
                                   tinvfreq, tmincc, pstations, pintervals, pfreqbands;soundspeed=1.47e3)
 
 # number of good T- and P-wave pairs
+ppairs.stn6 = [s[1:6] for s in ppairs.station]
+unique!(ppairs, [:stn6,:event1,:event2])
+select!(ppairs, Not(:stn6))
 nt = size(tpairs, 1)
 np = size(ppairs, 1)
     
