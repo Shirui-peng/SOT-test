@@ -133,7 +133,7 @@ Psannual = diag(P[2*m+4:end,2*m+4:end])
 τ = reshape(D*a, (m, 1)) 
 eτ = reshape(sqrt.(diag(D*P*D')), (m, 1))
 
-filename = @sprintf("results/pairs/%s_%s.h5",eqname,tsname)
+filename = @sprintf("results/%s_%s.h5",eqname,tsname)
 # save to file
 h5open(filename, "w") do file
   write(file, "t", Dates.value.(t .- DateTime(2000, 1, 1, 0, 0, 0)))
