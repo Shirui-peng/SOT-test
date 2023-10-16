@@ -11,5 +11,6 @@ export collectpairs, invert, invertf1, correctcycleskipping, correctcycleskippin
 include("pwaves.jl")
 include("twaves.jl")
 include("inversion.jl")
+include("inference.jl")
 
 end
